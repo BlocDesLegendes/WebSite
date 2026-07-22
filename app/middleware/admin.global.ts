@@ -3,5 +3,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   const { user, fetchUser } = useAuth()
   if (!user.value) await fetchUser()
-  if (!user.value) return navigateTo('/admin/login')
+  // On mémorise la destination pour y revenir après connexion
+  if (!user.value) return navigateTo({ path: '/admin/login', query: { redirect: to.fullPath } })
 })

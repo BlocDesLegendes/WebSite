@@ -3,13 +3,23 @@ definePageMeta({ layout: false })
 useHead({ title: 'Connexion — Admin Bloc des Légendes' })
 
 const { user, login } = useAuth()
+const route = useRoute()
 const email = ref('')
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
 
+// Destination après connexion : celle mémorisée par le middleware, sinon le
+// tableau de bord. On n'accepte qu'un chemin interne au back-office pour
+// éviter une redirection ouverte (`//evil.com` inclus).
+const target = computed(() => {
+  const raw = route.query.redirect
+  const path = typeof raw === 'string' ? raw : ''
+  return path.startsWith('/admin') && !path.startsWith('//') ? path : '/admin'
+})
+
 if (user.value) {
-  await navigateTo('/admin')
+  await navigateTo(target.value)
 }
 
 async function submit() {
@@ -17,7 +27,7 @@ async function submit() {
   loading.value = true
   try {
     await login(email.value, password.value)
-    await navigateTo('/admin')
+    await navigateTo(target.value)
   }
   catch (e: unknown) {
     const msg = (e as { data?: { message?: string } })?.data?.message

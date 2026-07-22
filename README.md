@@ -285,6 +285,7 @@ la semaine (`day`) est déduit de la date.
 |---|---|---|
 | `GET` | `/api/admin/messages` | Tous les messages (`?unread=true` pour filtrer) |
 | `PATCH` | `/api/admin/messages/:id` | Marquer lu/non-lu (`{ "isRead": boolean }`) |
+| `DELETE` | `/api/admin/messages/:id` | Supprimer définitivement (droit à l'effacement RGPD) |
 
 #### Paramètres
 
@@ -410,6 +411,22 @@ Les interfaces TypeScript communes au frontend et au backend sont dans `shared/t
 
 Accessible sur **`/admin`** (redirige vers `/admin/login` si non connecté).
 
+### Accès
+
+Il n'y a **volontairement aucun lien vers le back-office sur le site public** :
+les bénévoles vont directement sur `/admin` (à mettre en favori). C'est la
+convention pour un site vitrine — ça garde le site public propre et évite
+d'envoyer bots et curieux sur la page de connexion. Ce n'est pas une mesure de
+sécurité : la protection vient de l'authentification (section 5).
+
+La destination est **mémorisée avant la connexion** : ouvrir `/admin/creneaux`
+sans être connecté redirige vers `/admin/login?redirect=/admin/creneaux`, et
+après connexion on atterrit sur la page demandée (et non sur le tableau de
+bord). Les favoris vers une page admin précise fonctionnent donc.
+
+> Seuls les chemins internes commençant par `/admin` sont acceptés comme
+> destination — garde contre les redirections ouvertes.
+
 | Page | Route | Fonctionnalités |
 |---|---|---|
 | Connexion | `/admin/login` | Formulaire email + mot de passe |
@@ -417,13 +434,13 @@ Accessible sur **`/admin`** (redirige vers `/admin/login` si non connecté).
 | Articles | `/admin/articles` | Liste, création, modification, suppression |
 | Événements | `/admin/evenements` | CRUD, mono ou multi-jours avec horaires par jour |
 | Créneaux | `/admin/creneaux` | CRUD, récurrent (chaque semaine) ou ponctuel (date) |
-| Messages | `/admin/messages` | Lecture des messages de contact, marquer lu / non lu |
+| Messages | `/admin/messages` | Lecture des messages, marquer lu / non lu, suppression |
 | Paramètres | `/admin/parametres` | Modification du lien d'inscription |
 
 ### Ce qui n'est pas encore dans le back-office
 
-- Suppression d'un message de contact (API : seulement lecture + marquage lu)
 - Gestion des comptes admin (pas d'interface, utiliser le script de la section 3)
+- Upload d'images (les visuels d'articles sont des URLs externes à coller)
 
 ---
 
