@@ -28,6 +28,23 @@ async function setRead(msg: ContactMessage, isRead: boolean) {
   }
 }
 
+// ── Suppression (droit à l'effacement RGPD) ───────────────
+const deleteTarget = ref<ContactMessage | null>(null)
+const deleting = ref(false)
+
+async function confirmDelete() {
+  if (!deleteTarget.value) return
+  deleting.value = true
+  try {
+    await $fetch(`/api/admin/messages/${deleteTarget.value.id}`, { method: 'DELETE' })
+    await refresh()
+    deleteTarget.value = null
+  }
+  finally {
+    deleting.value = false
+  }
+}
+
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString('fr-FR', {
     day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit',
@@ -97,6 +114,7 @@ function mailtoLink(msg: ContactMessage) {
           >
             {{ busy === msg.id ? '…' : 'Marquer comme non lu' }}
           </button>
+          <button class="btn-danger" @click="deleteTarget = msg">Supprimer</button>
         </div>
       </article>
 
@@ -104,6 +122,25 @@ function mailtoLink(msg: ContactMessage) {
         {{ filter === 'unread' ? 'Aucun message non lu.' : 'Aucun message pour l\'instant.' }}
       </p>
     </div>
+
+    <!-- Confirmation suppression ────────────────────── -->
+    <Teleport to="body">
+      <div v-if="deleteTarget" class="overlay" @click.self="deleteTarget = null">
+        <div class="dialog">
+          <h2 class="dialog-title">Supprimer ce message ?</h2>
+          <p class="dialog-body">
+            Le message de « {{ deleteTarget.name }} » sera définitivement supprimé,
+            ainsi que ses coordonnées. Cette action est irréversible.
+          </p>
+          <div class="dialog-actions">
+            <button class="btn-ghost" @click="deleteTarget = null">Annuler</button>
+            <button class="btn-danger" :disabled="deleting" @click="confirmDelete">
+              {{ deleting ? 'Suppression…' : 'Supprimer' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -279,4 +316,47 @@ function mailtoLink(msg: ContactMessage) {
 
 .btn-ghost:hover:not(:disabled) { background: var(--fond); }
 .btn-ghost:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-danger {
+  background: transparent;
+  border: 1px solid rgba(192, 57, 43, 0.35);
+  color: #c0392b;
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-danger:hover:not(:disabled) { background: rgba(192, 57, 43, 0.07); }
+.btn-danger:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Dialogue de confirmation */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(22, 36, 29, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.dialog {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 2rem;
+  width: min(420px, calc(100vw - 2rem));
+  box-shadow: 0 16px 48px rgba(22, 36, 29, 0.2);
+}
+
+.dialog-title { font-size: 1.2rem; margin: 0 0 0.5rem; }
+.dialog-body  { color: var(--ink-soft); margin: 0 0 1.5rem; line-height: 1.5; }
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
 </style>
