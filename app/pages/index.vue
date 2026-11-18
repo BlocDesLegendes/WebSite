@@ -72,7 +72,8 @@ function slotClass(slot: TimeSlot): string {
   <section class="hero">
     <!-- Mur d'escalade schématisé : panneau incliné + prises + sol -->
     <div class="hero-wall" aria-hidden="true">
-      <UiWall />
+      <!--<UiWall />-->
+       <img width=auto height="80%" src="./mur.png" alt="not found">
     </div>
 
     <div class="container hero-content">
@@ -100,8 +101,8 @@ function slotClass(slot: TimeSlot): string {
           <span class="stat-label">Créneaux / semaine</span>
         </div>
         <div class="stat stat--moutarde">
-          <span class="stat-num">6+</span>
-          <span class="stat-label">Ouvert dès 6 ans</span>
+          <span class="stat-num">18+</span>
+          <span class="stat-label">Ouvert uniquement pour les adultes sur l'année 2026-2027</span>
         </div>
       </div>
     </div>
@@ -112,13 +113,13 @@ function slotClass(slot: TimeSlot): string {
     <div class="container valeurs-intro">
       <p class="section-kicker">Notre ADN</p>
       <h2>Plus qu'un club,<br>une communauté</h2>
-      <p class="section-sub">Le Bloc des Légendes, c'est un espace où chacun progresse à son rythme, quel que soit son niveau.</p>
+      <p class="section-sub">Le Bloc des Légendes, c'est un espace où chacun progresse à son rythme, quel que soit son niveau, dans la bonne humeur et dans le partage.</p>
     </div>
     <div class="valeurs-grid">
       <div class="valeur valeur--turquoise">
         <span class="valeur-num" aria-hidden="true">01</span>
         <h3>Progression</h3>
-        <p>Des encadrants diplômés adaptent chaque séance à ton niveau sur des blocs régulièrement renouvelés.</p>
+        <p>Des encadrants bénévoles adaptent chaque séance à ton niveau sur des blocs régulièrement renouvelés.</p>
       </div>
       <div class="valeur valeur--ambre">
         <span class="valeur-num" aria-hidden="true">02</span>
@@ -128,7 +129,7 @@ function slotClass(slot: TimeSlot): string {
       <div class="valeur valeur--moutarde">
         <span class="valeur-num" aria-hidden="true">03</span>
         <h3>Accessibilité</h3>
-        <p>Ouvert à tous dès 6 ans, prêt de matériel, accueil des personnes en situation de handicap. L'escalade de bloc est pour tout le monde.</p>
+        <p>Ouvert à tous, prêt de matériel, accueil des personnes en situation de handicap. L'escalade de bloc est pour tout le monde.</p>
       </div>
     </div>
   </section>
